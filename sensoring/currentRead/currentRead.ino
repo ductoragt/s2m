@@ -42,7 +42,9 @@ void setup()
    
    nCurrentThruWire = nCurrThruResistorRMS * 1000;
 
-   nPowerRMS = nCurrentThruWire * 127;
+
+
+   nPowerRMS = nCurrThruResistorRMS * 127;
 
    
    Serial.print("Volts Peak : ");
