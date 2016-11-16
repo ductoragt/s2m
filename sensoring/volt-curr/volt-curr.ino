@@ -21,7 +21,7 @@ void setup()
   Serial.begin(9600);
   
   emon1.voltage(1, 114.57, 1.7);  // Voltage: input pin, calibration, phase_shift
-  emon1.current(4, 4.58);       // Current: input pin, calibration.
+  emon1.current(2, 4.58);       // Current: input pin, calibration.
 
 
   //ethernet
@@ -75,7 +75,7 @@ void loop()
           client.println("</head>");
           client.println("<body>");
           
-          client.println("<div id='wrapper' align='center'><img alt='DuctorAGT' src='http://consustecengenharia.com.br/ductor/img/ductor_site.png'/><br/>");          
+          client.println("<div id='wrapper' align='center'><img alt='DuctorAGT' src='http://www.fundacity.com/media/cache/project_260/82bc86b85bfbf95d7c40b5d6822656934e25a038.jpg'/><br/>");          
           client.println("</div>");
           //Configura o texto e imprime o titulo no browser
           client.println("<div align='center'>");
