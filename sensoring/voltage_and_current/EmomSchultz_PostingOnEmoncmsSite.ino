@@ -10,12 +10,10 @@ EnergyMonitor emon1;             // Create an instance
 // pino do sensor 
 int sensor_pin=A0;  
 float temp = 0;  
-// API key do canal do thingspeak
+// API key 
 String apiKey = "1d994fd98bff274911a57baa03909747";
 // RX, TX do ESP8266
 SoftwareSerial ser(2,3); 
-
-//http://localhost/emoncms/input/post.json?node=1&json={power:200}&apikey=98918a3cea37fa102b86d7681c3f86e4
 
 void setup() {                
  
@@ -53,11 +51,10 @@ void loop() {
    
     
     delay(20);
-   //conexao TCP com o site do thingspeak
+   //conexao TCP com o site
     sendData("AT+CIPSTART=\"TCP\",\"emoncms.org\",80\r\n", 5000, DEBUG);
 
-  //monta a string de GET para o thingspeak
-    //http://localhost/emoncms/input/post.json?node=1&json={power1:100,power2:200,power3:300}
+  //monta a string de GET
   String getStr = "GET /input/post.json?node=1&json={";
   getStr +="realPower:";
   getStr += String(realPower);
@@ -94,7 +91,7 @@ void loop() {
     Serial.println("AT+CIPCLOSE");
   }
     
-  // o thingspeak precisa de 15 sec de delay entre updates
+  // 15 sec de delay entre updates
   delay(16000); 
 }
 
