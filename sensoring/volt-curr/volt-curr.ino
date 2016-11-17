@@ -21,7 +21,7 @@ void setup()
   Serial.begin(9600);
   
   emon1.voltage(1, 114.57, 1.7);  // Voltage: input pin, calibration, phase_shift
-  emon1.current(2, 4.58);       // Current: input pin, calibration.
+  emon1.current(4, 111.1);       // Current: input pin, calibration.
 
 
   //ethernet
