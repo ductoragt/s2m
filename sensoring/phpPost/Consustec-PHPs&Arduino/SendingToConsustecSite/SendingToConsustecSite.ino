@@ -42,32 +42,39 @@ void loop() {
   
   float realPower       = emon1.realPower;        //extract Real Power into variable
   float apparentPower   = emon1.apparentPower;    //extract Apparent Power into variable
-  float powerFActor     = emon1.powerFactor;      //extract Power Factor into Variable
+  float powerFactor     = emon1.powerFactor;      //extract Power Factor into Variable
   float supplyVoltage   = emon1.Vrms;             //extract Vrms into Variable
   float Irms            = emon1.Irms;             //extract Irms into Variable
   
    //le o LM35 e converte para celcius
    
     
-    delay(20);
+  delay(20);
+  String data ="realPower=";
+  data += String(realPower);
+  data +="&apparentPower=";
+  data += String(apparentPower);
+  data +="&powerFactor=";
+  data += String(powerFactor);
+  data +="&supplyVoltage=";
+  data += String(supplyVoltage);
+  data +="&Irms=";
+  data += String(Irms);
    //conexao TCP utilizando a porta 4000 (porta 80 pode dar conflito)
-    sendData("AT+CIPSTART=\"TCP\",\"192.168.25.12\",4000\r\n", 5000, DEBUG);
-
-  //monta a string de GET para o PHP
-  String getStr = "GET /energy/medida?";
-  getStr +="realPower=";
-  getStr += String(realPower);
-  getStr +="&apparentPower=";
-  getStr += String(apparentPower);
-  getStr +="&powerFActor=";
-  getStr += String(powerFActor);
-  getStr +="&supplyVoltage=";
-  getStr += String(supplyVoltage);
-  getStr +="&Irms=";
-  getStr += String(Irms);
-  getStr +=" HTTP/1.0";
-  getStr += "\r\n\r\n";
-
+    
+  sendData("AT+CIPSTART=\"TCP\",\"consustecengenharia.com.br\",80\r\n", 5000, DEBUG);
+  String getStr ="POST /s2m/ductor/medida.php HTTP/1.1\r\n";
+         getStr +="Host:www.consustecengenharia.com.br\r\n";
+         getStr +="Connection: close\r\n";
+         getStr +="Content-Type: application/x-www-form-urlencoded\r\n";
+         //getStr +="Accept: */*\r\n ";
+         getStr +="Content-Length: ";
+         getStr += data.length();
+         //getStr +="\r\n";
+         //getStr +="Content-Type: application/x-www-form-urlencoded\r\n";
+         getStr +="\r\n\r\n";
+         getStr += data;
+         //getStr += "\r\n\r\n";
   // verifica e envia para o ESP8266 o tamanho da string de GET 
   String cmd = "AT+CIPSEND=";
   cmd += String(getStr.length());
@@ -83,13 +90,12 @@ void loop() {
   }
   else{
     //caso  nao tenha conseguido achar o ">"
-    ser.println("AT+CIPCLOSE");
-    
+    ser.println("AT+CIPCLOSE");  
     Serial.println("AT+CIPCLOSE");
   }
     
   // 16 sec de delay entre updates
-  delay(16000); 
+  delay(30000); 
 }
 
 // Envio dos comandos AT para o modulo com timeout e debug.

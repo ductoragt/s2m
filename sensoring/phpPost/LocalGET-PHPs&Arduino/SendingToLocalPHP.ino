@@ -10,8 +10,7 @@ EnergyMonitor emon1;             // Create an instance
 // pino do sensor 
 int sensor_pin=A0;  
 float temp = 0;  
-// API key 
-String apiKey = "1d994fd98bff274911a57baa03909747";
+
 // RX, TX do ESP8266
 SoftwareSerial ser(2,3); 
 
@@ -43,7 +42,7 @@ void loop() {
   
   float realPower       = emon1.realPower;        //extract Real Power into variable
   float apparentPower   = emon1.apparentPower;    //extract Apparent Power into variable
-  float powerFActor     = emon1.powerFactor;      //extract Power Factor into Variable
+  float powerFactor     = emon1.powerFactor;      //extract Power Factor into Variable
   float supplyVoltage   = emon1.Vrms;             //extract Vrms into Variable
   float Irms            = emon1.Irms;             //extract Irms into Variable
   
@@ -51,24 +50,22 @@ void loop() {
    
     
     delay(20);
-   //conexao TCP com o site
-    sendData("AT+CIPSTART=\"TCP\",\"dtc-test.azurewebsites.net\",443\r\n", 5000, DEBUG);
+   //conexao TCP utilizando a porta 4000 (porta 80 pode dar conflito)
+    sendData("AT+CIPSTART=\"TCP\",\"192.168.25.12\",4000\r\n", 5000, DEBUG);
 
-  //monta a string de GET
-  String getStr = "GET /input/post.json?node=1&json={";
-  getStr +="realPower:";
+  //monta a string de GET para o PHP
+  String getStr = "GET /energy/medida/?";
+  getStr +="realPower=";
   getStr += String(realPower);
-  getStr +=",apparentPower:";
+  getStr +="&apparentPower=";
   getStr += String(apparentPower);
-  getStr +=",powerFActor:";
-  getStr += String(powerFActor);
-  getStr +=",supplyVoltage:";
+  getStr +="&powerFactor=";
+  getStr += String(powerFactor);
+  getStr +="&supplyVoltage=";
   getStr += String(supplyVoltage);
-  getStr +=",Irms:";
+  getStr +="&Irms=";
   getStr += String(Irms);
-  getStr +="}&apikey=";
-  getStr += apiKey;
-  //getStr +="HTTP/1.0";
+  getStr +=" HTTP/1.0";
   getStr += "\r\n\r\n";
 
   // verifica e envia para o ESP8266 o tamanho da string de GET 
@@ -91,7 +88,7 @@ void loop() {
     Serial.println("AT+CIPCLOSE");
   }
     
-  // 15 sec de delay entre updates
+  // 16 sec de delay entre updates
   delay(16000); 
 }
 
