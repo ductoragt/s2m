@@ -13,12 +13,11 @@ IPAddress ip(192,168,1,88);         //Define o endereco IP
 IPAddress gateway(192,168,1,1);     //Define o gateway
 IPAddress subnet(255, 255, 255, 0); //Define a máscara de rede
  
-//Inicializa o servidor web na porta 80
-EthernetServer server(80);
 EthernetClient emoncms;
 EnergyMonitor emon1;             // Create an instance
 
-char serverIp[] = "http://emoncms.org/";     //emoncms URL
+//char serverIp[] = "http://emoncms.org/";     //emoncms URL
+char serverIp[] = "80.243.190.58";
 
 // this method makes a HTTP connection to the server:
 void sendData(float realPower, float apparentPower, float PowerFActor, float supplyVoltage, float Irms) {
@@ -26,10 +25,10 @@ void sendData(float realPower, float apparentPower, float PowerFActor, float sup
   Serial.println("Connecting...");
   if (emoncms.connect(serverIp, 80)) {
     Serial.println("Connected, sending information...");
-
+#if 0
     // send the HTTP PUT request:
     //client.print("GET /emoncms/input/post.json?apikey=MYAPIKEY&json={power");
-    emoncms.print("GET /emoncms.org/input/post.json?apikey=178513c55da89417291c3510e2584cb4&json={");
+    emoncms.print("GET /input/post.json?apikey=178513c55da89417291c3510e2584cb4&json={");
     emoncms.print("realPower:");
     emoncms.print(realPower);
     emoncms.print(",apparentPower:");
@@ -43,10 +42,35 @@ void sendData(float realPower, float apparentPower, float PowerFActor, float sup
     //emoncms.print("}&apikey=");
     //emoncms.print(MYAPIKEY);   
     emoncms.println("} HTTP/1.1");
+   // emoncms.println("} ");
     emoncms.println("Host: emoncms.org");
     emoncms.println("User-Agent: Arduino-ethernet");
     emoncms.println("Connection: close");
     emoncms.println();
+    #endif
+
+
+  //monta a string de GET para o thingspeak
+    //http://localhost/emoncms/input/post.json?node=1&json={power1:100,power2:200,power3:300}
+  String getStr = "GET /input/post.json?node=2&json={";
+  getStr +="realPower:";
+  getStr += String(realPower);
+  getStr +=",apparentPower:";
+  getStr += String(apparentPower);
+  getStr +=",powerFActor:";
+  getStr += String(PowerFActor);
+  getStr +=",supplyVoltage:";
+  getStr += String(supplyVoltage);
+  getStr +=",Irms:";
+  getStr += String(Irms);
+  getStr +="}&apikey=";
+  getStr += MYAPIKEY;
+  //getStr +=" HTTP/1.1";
+  getStr += "\r\n\r\n";
+
+  emoncms.println("GET /input/post.json?node=2&json={realPower:16794.29,apparentPower:16814.22,powerFActor:1.00,supplyVoltage:187.78,Irms:89.54}&apikey=178513c55da89417291c3510e2584cb4");
+  Serial.println(getStr);
+    
 
     Serial.println("Finished transmitting");
   }
@@ -56,6 +80,9 @@ void sendData(float realPower, float apparentPower, float PowerFActor, float sup
     Serial.println("Disconnecting...");
     emoncms.stop();
   }
+
+      Serial.println("--------------------------------");
+
   
 
 }
@@ -87,9 +114,6 @@ void setup()
   Serial.println(Ethernet.localIP());
 
 
-//Start server
-    server.begin();
-
 }
 
 void loop()
@@ -106,7 +130,7 @@ void loop()
   sendData(realPower, apparentPower, powerFActor, 
     supplyVoltage, Irms); 
 
-  delay(1000);
+  delay(2000);
 
 //--------------------
 //ethernet block
