@@ -3,6 +3,10 @@
 
 #include "stdafx.h"
 #include "GatewayPC.h"
+#include "MainScreen.h"
+
+using namespace System;
+using namespace System::Threading;
 
 #define MAX_LOADSTRING 100
 
@@ -16,6 +20,7 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -42,14 +47,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+	MainScreen ms;
+	ms.Output("teste", 0);
+
+
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
-    {
+    {		
+		int loop = 0;
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-        }
+			Thread::Sleep(2000);
+			if(loop){loop=0}
+			else{loop=1}
+		}
     }
 
     return (int) msg.wParam;

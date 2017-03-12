@@ -17,7 +17,10 @@ EthernetClient emoncms;
 EnergyMonitor emon1;             // Create an instance
 
 //char serverIp[] = "http://emoncms.org/";     //emoncms URL
-char serverIp[] = "80.243.190.58";
+//char serverIp[] = "80.243.190.58";
+
+//char serverIp[] = "http://www.consustecengenharia.com.br";  
+char serverIp[] = "108.179.253.173";
 
 // this method makes a HTTP connection to the server:
 void sendData(float realPower, float apparentPower, float PowerFActor, float supplyVoltage, float Irms) {
